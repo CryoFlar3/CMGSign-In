@@ -1,14 +1,15 @@
 package org.computermentors.cmgsign_in;
 
-import android.app.ListActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -20,16 +21,18 @@ import java.util.Date;
 import java.util.List;
 
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends ActionBarActivity{
 
+    ListView mListView;
     protected List<ParseObject> mStudents;
-    public TextView mTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mListView = (ListView)findViewById(R.id.listView);
 
         //Day od the week
         Date c = new Date();
@@ -49,29 +52,53 @@ public class MainActivity extends ListActivity {
                     mStudents = stemCorps;
 
                     String[] students = new String[mStudents.size()];
+                    String[] studentId = new String[mStudents.size()];
                     int i = 0;
                     for (ParseObject message : mStudents) {
                         students[i] = message.getString(ParseConstants.KEY_NAME);
+
+                        ParseObject gameScore = new ParseObject(ParseConstants.CLASS_ATTENDANCE);
+                        gameScore.put("name", students[i]);
+                        gameScore.put("absent", true);
+                        gameScore.put("present", false);
+                        gameScore.put("excused", false);
+                        gameScore.saveEventually();
+
                         i++;
                     }
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                             MainActivity.this,
                             android.R.layout.simple_list_item_1,
                             students);
-                    setListAdapter(adapter);
+                    mListView.setAdapter(adapter);
                 }
             }
         });
+
+
+        registerForContextMenu(mListView);
     }
 
     @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
 
-        ParseObject message = mStudents.get(position);
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.signin_context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+
+            case R.id.id_absent:
 
 
 
+        }
+
+        return super.onContextItemSelected(item);
     }
 
     @Override

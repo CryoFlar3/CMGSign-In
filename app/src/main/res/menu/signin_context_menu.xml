@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/id_present"
+        android:title="@string/title_present" />
+    <item
+        android:id="@+id/id_excused"
+        android:title="@string/title_excused" />
+    <item
+        android:id="@+id/id_absent"
+        android:title="@string/title_absent" />
+</menu>
